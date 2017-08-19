@@ -8,7 +8,7 @@ public enum PROFICIENCY {
 	
 	BEGINNER(10, "Beginner"),
 	INTERMEDIATE(14, "Intermediate"),
-        PRO(30, "Pro"); //Picking 20 to be the natural length of any word
+        PRO(50, "Pro"); //Picking 20 to be the natural length of any word
 //private
 	private final int maxLetters;
 	private final String acronym;

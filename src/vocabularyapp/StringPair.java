@@ -6,7 +6,6 @@ import java.util.Objects;
 /**
  * A representation of a pair of strings.
  * @author Guan Wang
- * @version 1.0
  */
 public class StringPair {
 //Private

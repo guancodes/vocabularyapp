@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.Random;
 
 
@@ -16,16 +17,28 @@ public class VocabularyApp {
      */
     public static void main(String[] args) throws IOException{
         System.out.println("Welcome to GuanLang German learning app!");
-        PROFICIENCY prof = select(PROFICIENCY.values(), "proficiency level");
-        System.out.println(prof);
+        ArrayList<StringPair> list = getRecentList ();
         System.out.println();
-        COMMITMENT commit = select(COMMITMENT.values(), "commitment level");
-        System.out.println(commit);
-        System.out.println();
-        ArrayList<StringPair> list= wordRetrieval();
-        System.out.println(list);
+        if (list == null) {
+            PROFICIENCY prof = select(PROFICIENCY.values(), "proficiency level");
+            System.out.println(prof);
+            System.out.println();
+            COMMITMENT commit = select(COMMITMENT.values(), "commitment level");
+            System.out.println(commit);
+            System.out.println();
+            File aFile =new File("/Users/guanwang/Downloads/en-de.txt");
+            Scanner fileScan = new Scanner(aFile);
+            list= Utility.wordRetrieval(fileScan);
+            //System.out.println(list);
+            list = Utility.reduceByWordLength(list, prof.maxLetters());
+            Random rand = new Random();
+            list = Utility.generateWordList(list, commit.pairs(), rand);
+        }
+        wordDisplay(list);
+        saveWordList(list);
         
     }
+    
     
     //select from the menu, returns the Enum type option that got selected
     //prints the option selected to the user
@@ -44,52 +57,59 @@ public class VocabularyApp {
         int selected = input.nextInt();
         return options[selected - 1];
     }
-    
-    //returns an ArrayList of string pairs read from the file(later need to change)
-    //the file directory
-    
-    private static ArrayList<StringPair> wordRetrieval() throws IOException {
-        File aFile =new File("/Users/guanwang/Downloads/en-de.txt");
-        Scanner fileScan = new Scanner(aFile);
-        ArrayList<StringPair> list= new ArrayList<StringPair>();
-        while (fileScan.hasNext()){
-            //System.out.println(fileScan.nextLine());
-            
-            StringTokenizer st = new StringTokenizer(fileScan.nextLine(), ",");
-            String left;
-            String right;
-            left = st.nextToken().replace("\"", "");
-            right = st.nextToken().replace("\"", "");
-            StringPair strPair = StringPair.make(left, right);
-            list.add(strPair);
-        }
-        
-        return list;
-    }
-    
-    private static ArrayList<StringPair> reduceByWordLength(ArrayList<StringPair> list, int length){
-        ArrayList<StringPair> result = new ArrayList();
-        for (StringPair pair : list) {
-            if (pair.left().length() <= length) {
-                result.add(pair);
+   
+   private static void wordDisplay(ArrayList<StringPair> list){
+           
+        for(StringPair sp : list){
+            System.out.print("German word: ");
+            System.out.println(sp.left());
+            System.out.print("English translation: ");
+            System.out.println(sp.right());
+            System.out.println();
+            System.out.println("Ready for the next word? Press N");
+            String userReady = input.next();
+            System.out.println();
+            if(!userReady.equals("N") && !userReady.equals("n")){
+                break;
             }
+
         }
-        return result;
     }
-    
-    private static ArrayList<StringPair> generateWordList(ArrayList<StringPair> list, int size, Random rand) {
-        int listSize = list.size();
-        ArrayList<Integer> indices = new ArrayList();
-        for (int i=0; i<listSize; i++) {
-            indices.add(i);
+   
+    private static void saveWordList (ArrayList<StringPair> list) {
+        try{
+            PrintWriter writer = new PrintWriter("/Users/guanwang/Downloads/output.txt", "UTF-8");
+            for (StringPair pair : list){
+                writer.print("\"");
+                writer.print(pair.left());
+                writer.print("\"");
+                writer.print(",");
+                writer.print("\"");
+                writer.print(pair.right());
+                writer.println("\"");
+            }
+            writer.close();
+        } catch (IOException e) {
         }
-        ArrayList<StringPair> result = new ArrayList();
-        while (result.size() < size) {
-            int index = rand.nextInt(indices.size());
-            int listIndex = indices.get(index);
-            indices.remove(index);
-            result.add(list.get(listIndex));
-        }
-        return result;
     }
-}
+   
+    private static ArrayList<StringPair> getRecentList () throws IOException {
+        System.out.println("Would you like to review your most recent study? Y/N");
+        String reviewOrNot = input.next();
+        if(reviewOrNot.equals("y")||reviewOrNot.equals("Y")){
+            File aFile = new File("/Users/guanwang/Downloads/output.txt");
+            if (!aFile.exists()) {
+                System.out.println("You don't have a recent study record!");
+                return null;                
+            }
+            Scanner fileScan = new Scanner(aFile);
+            ArrayList<StringPair> list= Utility.wordRetrieval(fileScan);
+            fileScan.close();
+            return list;
+        }
+        else{
+            return null;
+        }
+    }
+   
+} 
