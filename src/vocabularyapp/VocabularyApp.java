@@ -97,9 +97,12 @@ public class VocabularyApp {
         System.out.println("Would you like to review your most recent study? Y/N");
         String reviewOrNot = input.next();
         if(reviewOrNot.equals("y")||reviewOrNot.equals("Y")){
-            File aFile = new File("/Users/guanwang/Downloads/output.txt");
+            File aFile = new File("/Users/guanwang/Downloads/output.tx");
             if (!aFile.exists()) {
+                System.out.println();
                 System.out.println("You don't have a recent study record!");
+                System.out.println("But no worries, we'll go right ahead and "
+                        + "create one for you!");
                 return null;                
             }
             Scanner fileScan = new Scanner(aFile);
