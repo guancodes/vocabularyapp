@@ -1,0 +1,10 @@
+.classpath
+.project
+bin/
+.settings/
+build.xml
+build/
+*.mf
+dist/
+nbproject/
+
