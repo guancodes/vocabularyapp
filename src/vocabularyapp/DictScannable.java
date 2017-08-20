@@ -7,7 +7,7 @@ package vocabularyapp;
 public interface DictScannable {
     /**
      * Checks if this DictScannable has next element
-     * @return 
+     * @return if has next element
      */
     public boolean hasNext();
     /**

@@ -14,7 +14,7 @@ public class DictWriter implements DictWritable {
    
     /**
      * Creates a new DictWriter
-     * @param file file to be writen into
+     * @param file file to be written into
      * @throws FileNotFoundException
      * @throws UnsupportedEncodingException 
      */

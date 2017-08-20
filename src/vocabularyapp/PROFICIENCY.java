@@ -1,7 +1,8 @@
 package vocabularyapp;
 
 /**
- * Proficiency levels that can be selected by users
+ * Proficiency levels that can be selected by users.
+ * maxLetters indicates the maximum length of words to be used
  * @author guanwang
  */
 public enum PROFICIENCY {
