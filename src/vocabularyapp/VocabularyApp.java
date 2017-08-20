@@ -93,7 +93,7 @@ public class VocabularyApp {
             System.out.println("Ready for the next word? (y/n)");
             String userReady = input.next();
             System.out.println();
-            if (userReady.equals("n")) {
+            if (!userReady.equals("y")) {
                 System.out.println("Exiting... Come back soon!");
                 break;
             }
