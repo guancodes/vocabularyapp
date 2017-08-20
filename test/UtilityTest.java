@@ -1,17 +1,10 @@
-
-
-
 import org.junit.Test;
 import static org.junit.Assert.*;
 import vocabularyapp.*;
 import java.util.*;
-/**
- *
- * @author guanwang
- */
+
+
 public class UtilityTest {
-    //@Test
-    // public void hello() {}
     
     @Test
     public void testReduceWordLengthHapppyPath () {
@@ -84,7 +77,7 @@ public class UtilityTest {
     }
     
     @Test
-    public void generateWordListHappyPath () {
+    public void testgenerateWordListHappyPath () {
         StringPair pair1 = StringPair.make("nihao","hello");
         StringPair pair2 = StringPair.make("jintiantianqihao","it is a nice day today");
         StringPair pair3 = StringPair.make("zuijinzenmeyang","how are you doing lately");
@@ -106,7 +99,7 @@ public class UtilityTest {
         assertEquals(list2,result); 
         }
     @Test
-    public void generateWordListNoneNull () {
+    public void testgenerateWordListNoneNull () {
         StringPair pair1 = StringPair.make("nihao","hello");
         StringPair pair2 = StringPair.make("jintiantianqihao","it is a nice day today");
         StringPair pair3 = StringPair.make("zuijinzenmeyang","how are you doing lately");
@@ -130,7 +123,7 @@ public class UtilityTest {
     }
     
     @Test
-    public void generateWordListHugeSize () {
+    public void testgenerateWordListHugeSize () {
         StringPair pair1 = StringPair.make("nihao","hello");
         StringPair pair2 = StringPair.make("jintiantianqihao","it is a nice day today");
         StringPair pair3 = StringPair.make("zuijinzenmeyang","how are you doing lately");
@@ -150,8 +143,42 @@ public class UtilityTest {
         }catch(AssertionError e){}
     }
     
-    //private
+    @Test
+    public void testPreparePairForDisplayHappyPath () {
+        StringPair pair = StringPair.make("nihao","hello"); 
+        String preparedPair = Utility.preparePairForDisplay(pair);
+        assertEquals("German Word: nihao\nEnglish translation: hello", preparedPair);
+    }
     
+    @Test
+    public void testPreparePairForDisplayNonNull () {
+        try{
+            Utility.preparePairForDisplay(null);
+            fail("assertion failure");
+        } catch(NullPointerException e) {}
+    }
     
+    @Test
+    public void testPreparePairForDisplayEmptyPair () {
+        StringPair pair = StringPair.make("",""); 
+        String preparedPair = Utility.preparePairForDisplay(pair);
+        assertEquals("German Word: \nEnglish translation: ", preparedPair);
+    }
     
+    @Test
+    public void testPrepareMenuForDisplayHappyPath () {
+        PROFICIENCY[] p= PROFICIENCY.values();
+        String result = Utility.prepareMenuForDisplay(p);
+        assertEquals("1 Beginner\n2 Intermediate\n3 Pro\n", result);
+   
+    }
+    
+    @Test
+    public void testPrepareMenuForDisplayNonNull () {
+        try{
+            Utility.prepareMenuForDisplay(null);
+            fail("insertion failure");
+        } catch(NullPointerException e){}
+    }
+
 }

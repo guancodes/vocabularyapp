@@ -1,9 +1,6 @@
 package vocabularyapp;
 
-/**
- *
- * @author guanwang
- */
+
 public enum PROFICIENCY {
 	
 	BEGINNER(10, "Beginner"),

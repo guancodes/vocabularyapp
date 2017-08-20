@@ -1,118 +1,88 @@
-
 package vocabularyapp;
-import java.util.*;
-import java.io.BufferedReader;
+
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.util.*;
 import java.io.IOException;
-import java.io.File;
-import java.io.PrintWriter;
 import java.util.Random;
 
 
 public class VocabularyApp {
-    private static Scanner input = new Scanner(System.in);
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) throws IOException{
-        System.out.println("Welcome to GuanLang German learning app!");
-        ArrayList<StringPair> list = getRecentList ();
-        System.out.println();
-        if (list == null) {
-            PROFICIENCY prof = select(PROFICIENCY.values(), "proficiency level");
-            System.out.println(prof);
-            System.out.println();
-            COMMITMENT commit = select(COMMITMENT.values(), "commitment level");
-            System.out.println(commit);
-            System.out.println();
-            File aFile =new File("/Users/guanwang/Downloads/en-de.txt");
-            Scanner fileScan = new Scanner(aFile);
-            list= Utility.wordRetrieval(fileScan);
-            //System.out.println(list);
-            list = Utility.reduceByWordLength(list, prof.maxLetters());
-            Random rand = new Random();
-            list = Utility.generateWordList(list, commit.pairs(), rand);
-        }
-        wordDisplay(list);
-        saveWordList(list);
-        
+    private Scanner input = new Scanner(System.in);
+    private Dictionary dictRecent = Dictionary.make("/Users/guanwang/Downloads/output.txt");
+    private Dictionary dictMain = Dictionary.make("/Users/guanwang/Downloads/en-de.txt");
+    
+    public static VocabularyApp make() {
+        return new VocabularyApp();
     }
     
+    public void run() throws IOException {
+        if (!this.dictMain.exists()) {
+            throw new FileNotFoundException("Main dictionary missing");
+        }
+
+        Optional<ArrayList<StringPair>> list = getRecentList();
+        System.out.println();
+
+        if (!list.isPresent()) {
+            PROFICIENCY prof = selectFrom(PROFICIENCY.values(), "proficiency level");
+            System.out.println(prof);
+            System.out.println();
+
+            COMMITMENT commit = selectFrom(COMMITMENT.values(), "commitment level");
+            System.out.println(commit);
+            System.out.println();
+
+            list = this.dictMain.load();
+
+            list = Optional.of(Utility.reduceByWordLength(list.get(), prof.maxLetters()));
+
+            Random rand = new Random();
+            list = Optional.of(Utility.generateWordList(list.get(), commit.pairs(), rand));
+        }
+        
+        wordDisplay(list.get());
+        this.dictRecent.save(list.get());        
+    }
     
     //select from the menu, returns the Enum type option that got selected
     //prints the option selected to the user
-    private static <T> T select(T[] options, String type) {
+    private <T> T selectFrom(T[] options, String type) {
         System.out.println("Please select your " + type + ":");
-        StringBuilder sb = new StringBuilder();
-        int counter = 1;
-        for (T t: options) {
-            sb.append(counter);
-            sb.append(" ");
-            sb.append(t.toString());
-            sb.append("\n");
-            counter += 1;
-        }
-        System.out.println(sb);
+        String prepared = Utility.prepareMenuForDisplay(options);
+        System.out.println(prepared);
         int selected = input.nextInt();
         return options[selected - 1];
     }
-   
-   private static void wordDisplay(ArrayList<StringPair> list){
-           
-        for(StringPair sp : list){
-            System.out.print("German word: ");
-            System.out.println(sp.left());
-            System.out.print("English translation: ");
-            System.out.println(sp.right());
+
+    private void wordDisplay(ArrayList<StringPair> list){
+        for (StringPair sp : list) {
+            String prepared = Utility.preparePairForDisplay(sp);
+            System.out.println(prepared);
             System.out.println();
-            System.out.println("Ready for the next word? Press N");
+            System.out.println("Ready for the next word? (y/n)");
             String userReady = input.next();
             System.out.println();
-            if(!userReady.equals("N") && !userReady.equals("n")){
+            if (userReady.equals("n")) {
                 break;
             }
-
         }
     }
    
-    private static void saveWordList (ArrayList<StringPair> list) {
-        try{
-            PrintWriter writer = new PrintWriter("/Users/guanwang/Downloads/output.txt", "UTF-8");
-            for (StringPair pair : list){
-                writer.print("\"");
-                writer.print(pair.left());
-                writer.print("\"");
-                writer.print(",");
-                writer.print("\"");
-                writer.print(pair.right());
-                writer.println("\"");
-            }
-            writer.close();
-        } catch (IOException e) {
-        }
-    }
-   
-    private static ArrayList<StringPair> getRecentList () throws IOException {
-        System.out.println("Would you like to review your most recent study? Y/N");
+    private Optional<ArrayList<StringPair>> getRecentList () throws IOException {
+        System.out.println("Would you like to review your most recent study? (y/n)");
         String reviewOrNot = input.next();
-        if(reviewOrNot.equals("y")||reviewOrNot.equals("Y")){
-            File aFile = new File("/Users/guanwang/Downloads/output.tx");
-            if (!aFile.exists()) {
+        if (reviewOrNot.equals("y")) {
+            Optional<ArrayList<StringPair>> list = this.dictRecent.load();
+            if (!list.isPresent()) {
                 System.out.println();
                 System.out.println("You don't have a recent study record!");
                 System.out.println("But no worries, we'll go right ahead and "
                         + "create one for you!");
-                return null;                
             }
-            Scanner fileScan = new Scanner(aFile);
-            ArrayList<StringPair> list= Utility.wordRetrieval(fileScan);
-            fileScan.close();
             return list;
-        }
-        else{
-            return null;
+        } else {
+            return Optional.empty();
         }
     }
-   
-} 
+
+}

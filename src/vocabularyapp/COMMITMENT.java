@@ -1,10 +1,6 @@
-
 package vocabularyapp;
 
-/**
- *
- * @author guanwang
- */
+
 public enum COMMITMENT {
     CASUAL(15, "Casual"),
     SERIOUS(30, "Serious"),

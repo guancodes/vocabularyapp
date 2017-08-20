@@ -1,12 +1,8 @@
-
 package vocabularyapp;
 
 import java.util.Objects;
 
-/**
- * A representation of a pair of strings.
- * @author Guan Wang
- */
+
 public class StringPair {
 //Private
 	

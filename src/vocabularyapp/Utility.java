@@ -1,24 +1,12 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package vocabularyapp;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
-import java.util.Scanner;
-import java.util.StringTokenizer;
 
-/**
- *
- * @author guanwang
- */
+
 public class Utility {
+    
     public static ArrayList<StringPair> 
         reduceByWordLength(ArrayList<StringPair> list, int length){
         Objects.requireNonNull(list);
@@ -50,25 +38,29 @@ public class Utility {
         }
         return result;
     }
-        
-    //returns an ArrayList of string pairs read from the file(later need to change)
-    //the file directory
-    public static ArrayList<StringPair> wordRetrieval(Scanner scanner) {
-//        File aFile =new File("/Users/guanwang/Downloads/en-de.txt");
-//        Scanner fileScan = new Scanner(aFile);
-        ArrayList<StringPair> list= new ArrayList<StringPair>();
-        while (scanner.hasNext()){
-            //System.out.println(fileScan.nextLine());
 
-            StringTokenizer st = new StringTokenizer(scanner.nextLine(), ",");
-            String left;
-            String right;
-            left = st.nextToken().replace("\"", "");
-            right = st.nextToken().replace("\"", "");
-            StringPair strPair = StringPair.make(left, right);
-            list.add(strPair);
-        }
-
-        return list;
+    public static String preparePairForDisplay(StringPair pair) {
+        Objects.requireNonNull(pair);
+        StringBuilder sb = new StringBuilder();
+        sb.append("German Word: ");
+        sb.append(pair.left());
+        sb.append("\nEnglish translation: ");
+        sb.append(pair.right());
+        return sb.toString();
     }
+
+    public static <T> String prepareMenuForDisplay(T[] options) {
+        Objects.requireNonNull(options);
+        StringBuilder sb = new StringBuilder();
+        int counter = 1;
+        for (T t: options) {
+            sb.append(counter);
+            sb.append(" ");
+            sb.append(t.toString());
+            sb.append("\n");
+            counter += 1;
+        }
+        return sb.toString();
+    }
+    
 }

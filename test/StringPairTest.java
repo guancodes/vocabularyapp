@@ -1,13 +1,9 @@
-
 import org.junit.Test;
 import static org.junit.Assert.*;
 import vocabularyapp.StringPair;
 import java.util.Random;
 
-/**
- *
- * @author guanwang
- */
+
 public class StringPairTest {
     private Random rng = new Random(42);
 
