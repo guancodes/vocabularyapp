@@ -1,12 +1,22 @@
 package vocabularyapp;
 
-
+/**
+ * Proficiency levels that can be selected by users
+ * @author guanwang
+ */
 public enum PROFICIENCY {
-	
+	/**
+         * Beginner level
+         */
 	BEGINNER(10, "Beginner"),
+        /**
+         * Intermediate level
+         */
 	INTERMEDIATE(14, "Intermediate"),
-        PRO(50, "Pro"); //Picking 20 to be the natural length of any word
-//private
+        /**
+         * Pro level
+         */
+        PRO(50, "Pro"); 
 	private final int maxLetters;
 	private final String acronym;
 	

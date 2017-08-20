@@ -1,11 +1,26 @@
 package vocabularyapp;
 
-
+/**
+ * Commitment levels that can be selected by users
+ * @author guanwang
+ */
 public enum COMMITMENT {
+    /**
+     * Casual level
+     */
     CASUAL(15, "Casual"),
+    /**
+     * Serious level
+     */ 
     SERIOUS(30, "Serious"),
-    HARDCORE(50, "Hardcore"),
-    GODLIKE(80, "Godlike");
+    /**
+     * Hard-core level
+     */
+    HARDCORE(50, "Hard-core"),
+    /**
+     * God-like level
+     */
+    GODLIKE(80, "God-like");
 //Private
     private final int pairs;
     private final String acronym;

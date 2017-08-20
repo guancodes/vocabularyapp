@@ -4,12 +4,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-
-
+/**
+ * Creates a bridge that wraps a real PrintWriter in the object
+ * @author guanwang
+ */
 public class DictWriter implements DictWritable {
     
     private PrintWriter writer;
    
+    /**
+     * Creates a new DictWriter
+     * @param file file to be writen into
+     * @throws FileNotFoundException
+     * @throws UnsupportedEncodingException 
+     */
     public DictWriter(File file) throws FileNotFoundException, UnsupportedEncodingException {
         this.writer = new PrintWriter(file, "UTF-8");
     }

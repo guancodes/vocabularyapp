@@ -10,11 +10,20 @@ public class VocabularyApp {
     private Scanner input = new Scanner(System.in);
     private Dictionary dictRecent = Dictionary.make("Resources/recent-dict.txt");
     private Dictionary dictMain = Dictionary.make("Resources/en-de.txt");
-
+    
+    //factory
+    
+    /**
+     * Creates a new vocabulary app
+     * @return a new vocabulary app
+     */
     public static VocabularyApp make() {
         return new VocabularyApp();
     }
-
+    /**
+     * starts a vocabulary app
+     * @throws IOException 
+     */
     public void run() throws IOException {
         if (!this.dictMain.exists()) {
             throw new FileNotFoundException("Main dictionary missing");
@@ -43,17 +52,39 @@ public class VocabularyApp {
         wordDisplay(list.get());
         this.dictRecent.save(list.get());
     }
-
+    
+    /**
+     * Selects from the given menu
+     * @param <T> one of the ENUMs
+     * @param options the possible values inside a single enumeration object
+     * @param type a string specifies what kind of option it is
+     * @return the Enum type option that got selected
+     */
     //select from the menu, returns the Enum type option that got selected
     //prints the option selected to the user
     private <T> T selectFrom(T[] options, String type) {
         System.out.println("Please select your " + type + ":");
         String prepared = Utility.prepareMenuForDisplay(options);
         System.out.println(prepared);
-        int selected = input.nextInt();
-        return options[selected - 1];
+        Optional<Integer> selected = Optional.empty();
+        while (true) {
+            try {
+                selected = Optional.of(input.nextInt());
+                return options[selected.get() - 1];
+            } catch (Exception e) {
+                System.out.println("Invalid input! Try again please");
+                if (selected.isPresent()) {
+                    selected = Optional.empty();
+                } else {
+                    input.next();                    
+                }
+            }
+        }
     }
-
+    /**
+     * Displays a list of words in the console
+     * @param list the list of words to be displayed
+     */
     private void wordDisplay(ArrayList<StringPair> list) {
         for (StringPair sp : list) {
             String prepared = Utility.preparePairForDisplay(sp);
@@ -63,11 +94,17 @@ public class VocabularyApp {
             String userReady = input.next();
             System.out.println();
             if (userReady.equals("n")) {
+                System.out.println("Exiting... Come back soon!");
                 break;
             }
         }
     }
-
+    /**
+     * Gets the most recent list of words learned before
+     * @return Optional of an ArrayList of StringPair by reading
+     * the most recent word list record
+     * @throws IOException 
+     */
     private Optional<ArrayList<StringPair>> getRecentList() throws IOException {
         System.out.println("Would you like to review your most recent study? (y/n)");
         String reviewOrNot = input.next();
@@ -81,6 +118,7 @@ public class VocabularyApp {
             }
             return list;
         } else {
+            System.out.println("\nStarting a new session...");
             return Optional.empty();
         }
     }
