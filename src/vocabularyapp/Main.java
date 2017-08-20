@@ -9,7 +9,7 @@ public class Main {
         try {
             app.run();
         } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println(e.getClass() + ": " + e.getMessage());
             System.exit(1);
         }
     }

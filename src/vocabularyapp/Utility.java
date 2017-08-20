@@ -2,7 +2,9 @@ package vocabularyapp;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 
 public class Utility {
@@ -53,7 +55,7 @@ public class Utility {
         Objects.requireNonNull(options);
         StringBuilder sb = new StringBuilder();
         int counter = 1;
-        for (T t: options) {
+        for (T t : options) {
             sb.append(counter);
             sb.append(" ");
             sb.append(t.toString());
@@ -61,6 +63,30 @@ public class Utility {
             counter += 1;
         }
         return sb.toString();
+    }
+    
+    public static Optional<ArrayList<StringPair>> loadData(DictScannable scanner) {
+        ArrayList<StringPair> list = new ArrayList();
+        while (scanner.hasNext()) {
+            StringTokenizer st = new StringTokenizer(scanner.nextLine(), ",");
+            String left = st.nextToken().replace("\"", "");
+            String right = st.nextToken().replace("\"", "");
+            StringPair strPair = StringPair.make(left, right);
+            list.add(strPair);
+        }
+        return Optional.of(list);
+    }
+    
+    public static void saveData(DictWritable writer, ArrayList<StringPair> list) {
+        for (StringPair pair : list) {
+            writer.print("\"");
+            writer.print(pair.left());
+            writer.print("\"");
+            writer.print(",");
+            writer.print("\"");
+            writer.print(pair.right());
+            writer.print("\"\n");
+        }
     }
     
 }

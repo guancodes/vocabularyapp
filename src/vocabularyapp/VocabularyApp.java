@@ -5,16 +5,16 @@ import java.util.*;
 import java.io.IOException;
 import java.util.Random;
 
-
 public class VocabularyApp {
+
     private Scanner input = new Scanner(System.in);
-    private Dictionary dictRecent = Dictionary.make("/Users/guanwang/Downloads/output.txt");
-    private Dictionary dictMain = Dictionary.make("/Users/guanwang/Downloads/en-de.txt");
-    
+    private Dictionary dictRecent = Dictionary.make("Resources/recent-dict.txt");
+    private Dictionary dictMain = Dictionary.make("Resources/en-de.txt");
+
     public static VocabularyApp make() {
         return new VocabularyApp();
     }
-    
+
     public void run() throws IOException {
         if (!this.dictMain.exists()) {
             throw new FileNotFoundException("Main dictionary missing");
@@ -39,11 +39,11 @@ public class VocabularyApp {
             Random rand = new Random();
             list = Optional.of(Utility.generateWordList(list.get(), commit.pairs(), rand));
         }
-        
+
         wordDisplay(list.get());
-        this.dictRecent.save(list.get());        
+        this.dictRecent.save(list.get());
     }
-    
+
     //select from the menu, returns the Enum type option that got selected
     //prints the option selected to the user
     private <T> T selectFrom(T[] options, String type) {
@@ -54,7 +54,7 @@ public class VocabularyApp {
         return options[selected - 1];
     }
 
-    private void wordDisplay(ArrayList<StringPair> list){
+    private void wordDisplay(ArrayList<StringPair> list) {
         for (StringPair sp : list) {
             String prepared = Utility.preparePairForDisplay(sp);
             System.out.println(prepared);
@@ -67,8 +67,8 @@ public class VocabularyApp {
             }
         }
     }
-   
-    private Optional<ArrayList<StringPair>> getRecentList () throws IOException {
+
+    private Optional<ArrayList<StringPair>> getRecentList() throws IOException {
         System.out.println("Would you like to review your most recent study? (y/n)");
         String reviewOrNot = input.next();
         if (reviewOrNot.equals("y")) {

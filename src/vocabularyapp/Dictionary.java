@@ -4,7 +4,6 @@ import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 
 public class Dictionary {
@@ -30,31 +29,15 @@ public class Dictionary {
         if (!file.exists()){
             return Optional.empty();
         }
-        Scanner fileScan = new Scanner(this.file);
-        ArrayList<StringPair> list = new ArrayList();
-        while (fileScan.hasNext()){
-            StringTokenizer st = new StringTokenizer(fileScan.nextLine(), ",");
-            String left = st.nextToken().replace("\"", "");
-            String right = st.nextToken().replace("\"", "");
-            StringPair strPair = StringPair.make(left, right);
-            list.add(strPair);
-        }
-        return Optional.of(list);
+        DictScanner scanner = new DictScanner(this.file);
+        return Utility.loadData(scanner);
     }
     
     //Commands
     
     public void save(ArrayList<StringPair> list) throws IOException {
-        try (PrintWriter writer = new PrintWriter(this.file, "UTF-8")) {
-            for (StringPair pair : list){
-                writer.print("\"");
-                writer.print(pair.left());
-                writer.print("\"");
-                writer.print(",");
-                writer.print("\"");
-                writer.print(pair.right());
-                writer.println("\"");
-            }
+        try (DictWriter writer = new DictWriter(this.file)) {
+            Utility.saveData(writer, list);
         }
     }
     

@@ -4,7 +4,86 @@ import vocabularyapp.*;
 import java.util.*;
 
 
+class MockDictScanner implements DictScannable {
+
+    private ArrayList<String> list = new ArrayList();
+    
+    public MockDictScanner(ArrayList<String> list) {
+        this.list = list;
+    }
+    
+    @Override
+    public boolean hasNext() {
+        return this.list.size() > 0;
+    }
+    
+    @Override
+    public String nextLine() {
+        String value = this.list.get(0);
+        this.list.remove(0);
+        return value;
+    }
+
+}
+
+
+class MockDictWriter implements DictWritable {
+    
+    public String memory = "";
+    
+    @Override
+    public void print(String value) {
+        memory += value;
+    }
+
+    @Override
+    public void close() {}
+}
+
+
 public class UtilityTest {
+    @Test
+    public void testSaveData(){
+        MockDictWriter writer = new MockDictWriter();
+        StringPair pair1 = StringPair.make("nihao","hello");
+        StringPair pair2 = StringPair.make("ta","he");
+        ArrayList<StringPair> list = new ArrayList();
+        list.add(pair1);
+        list.add(pair2);
+        Utility.saveData(writer, list);
+        assertEquals("\"nihao\",\"hello\"\n" + "\"ta\",\"he\"\n",writer.memory);   
+    }
+    
+    @Test
+    public void testSaveDataEmptylist () {
+        
+        MockDictWriter writer = new MockDictWriter();
+        ArrayList<StringPair> list = new ArrayList();
+        Utility.saveData(writer, list);
+        assertEquals("", writer.memory);
+    }
+    
+    @Test
+    public void testLoadData () {
+        StringPair pair1 = StringPair.make("nihao","hello");
+        ArrayList<StringPair> listExp = new ArrayList();
+        listExp.add(pair1);
+        ArrayList<String> aFile = new ArrayList();
+        aFile.add("\"nihao\",\"hello\"");
+        MockDictScanner scanner = new MockDictScanner(aFile);
+        ArrayList<StringPair> result = new ArrayList<StringPair>();
+        result = Utility.loadData(scanner).get();
+        assertEquals(listExp,result);
+    }
+    
+    @Test
+    public void testLoadDataEmptyList () {
+        ArrayList<String> aFile = new ArrayList();
+        MockDictScanner scanner = new MockDictScanner(aFile);
+        ArrayList<StringPair> result = new ArrayList<StringPair>();
+        result = Utility.loadData(scanner).get();
+        assertEquals(aFile,result);
+    }
     
     @Test
     public void testReduceWordLengthHapppyPath () {
