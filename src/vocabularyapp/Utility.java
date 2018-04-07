@@ -1,21 +1,29 @@
 package vocabularyapp;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-
+/**
+ * Utility methods assisting the app
+ * @author guanwang
+ */
 public class Utility {
+
     /**
      * Reduces the list by only allowing a specific word length
      * @param list the list that's worked on
      * @param length the word length allowed
      * @return a new list with words of given word length
      */
-    public static ArrayList<StringPair> 
-        reduceByWordLength(ArrayList<StringPair> list, int length){
+    public static ArrayList<StringPair>
+            reduceByWordLength(ArrayList<StringPair> list, int length) {
         Objects.requireNonNull(list);
         ArrayList<StringPair> result = new ArrayList();
         for (StringPair pair : list) {
@@ -25,22 +33,22 @@ public class Utility {
         }
         return result;
     }
-    
+
     /**
      * Generates a given sized list of random words from the given list
      * @param list the source list
      * @param size the size of the new list
      * @param rand a random number generator
      * @return a new list of from the given list
-     */    
-    public static ArrayList<StringPair> 
-        generateWordList(ArrayList<StringPair> list, int size, Random rand) {
+     */
+    public static ArrayList<StringPair>
+            generateWordList(ArrayList<StringPair> list, int size, Random rand) {
         Objects.requireNonNull(list);
         Objects.requireNonNull(rand);
-        assert(list.size() > size);
+        assert (list.size() > size);
         int listSize = list.size();
         ArrayList<Integer> indices = new ArrayList();
-        for (int i=0; i<listSize; i++) {
+        for (int i = 0; i < listSize; i++) {
             indices.add(i);
         }
         ArrayList<StringPair> result = new ArrayList();
@@ -52,6 +60,7 @@ public class Utility {
         }
         return result;
     }
+
     /**
      * Converts a StringPair to a string that's ready for display
      * @param pair the StringPair to be displayed
@@ -66,7 +75,7 @@ public class Utility {
         sb.append(pair.right());
         return sb.toString();
     }
-    
+
     /**
      * Converts an Array of options to a string that's ready for display
      * @param <T> one of the ENUMs
@@ -86,7 +95,7 @@ public class Utility {
         }
         return sb.toString();
     }
-    
+
     /**
      * Loads data from a given scanner
      * @param scanner a DictSannable used to parse the data
@@ -103,12 +112,12 @@ public class Utility {
         }
         return Optional.of(list);
     }
-    
+
     /**
      * Writes data of a given list into a file
      * @param writer a DictWritable used to record data into files
-     * @param list an ArrayList of StringPair that contains data to be written into
-     * files
+     * @param list an ArrayList of StringPair that contains data to be written
+     * into files
      */
     public static void saveData(DictWritable writer, ArrayList<StringPair> list) {
         for (StringPair pair : list) {
@@ -121,5 +130,103 @@ public class Utility {
             writer.print("\"\n");
         }
     }
-    
+
+    /**
+     * Prints details of an SQLException chain to <code>System.err</code>.
+     * Details included are SQL State, Error code, Exception message.
+     * @param e the SQLException from which to print details.
+     */
+    public static void printSQLException(SQLException e) {
+        // Unwraps the entire exception chain to unveil the real cause of the
+        // Exception.
+        while (e != null) {
+            System.err.println("\n----- SQLException -----");
+            System.err.println("  SQL State:  " + e.getSQLState());
+            System.err.println("  Error Code: " + e.getErrorCode());
+            System.err.println("  Message:    " + e.getMessage());
+            // for stack traces, refer to derby.log or uncomment this:
+            //e.printStackTrace(System.err);
+            e = e.getNextException();
+        }
+    }
+
+    /**
+     * Closes sql result set
+     * @param rs The result set to be closed
+     */
+    public static void closeSQLResultSet(ResultSet rs) {
+        try {
+            if (rs != null) {
+                rs.close();
+                rs = null;
+            }
+        } catch (SQLException sqle) {
+            printSQLException(sqle);
+        }
+    }
+
+    /**
+     * Closes SQL statement
+     * @param st The statement to be closed
+     */
+    public static void closeSQLStatement(Statement st) {
+        try {
+            if (st != null) {
+                st.close();
+                st = null;
+            }
+        } catch (SQLException sqle) {
+            printSQLException(sqle);
+        }
+    }
+
+    /**
+     * Closes SQL connection
+     * @param conn The connection to be closed
+     */
+    public static void closeSQLConnection(Connection conn) {
+        try {
+            if (conn != null) {
+                conn.close();
+                conn = null;
+            }
+        } catch (SQLException sqle) {
+            printSQLException(sqle);
+        }
+    }
+
+    /**
+     * Checks if table exists
+     * @param conn The connection to database
+     * @param tableName name of the table
+     * @return true if table exists, false otherwise
+     */
+    public static boolean checkTableExists(Connection conn, String tableName) {
+        boolean exists = false;
+        Statement st = null;
+        ResultSet rs = null;
+        try {
+            st = conn.createStatement();
+            rs = conn.getMetaData().getTables(null, "APP", tableName.toUpperCase(), null);
+            exists = rs.next();
+            conn.commit();
+        } catch (SQLException e) {
+            Utility.printSQLException(e);
+        } finally {
+            Utility.closeSQLResultSet(rs);
+            Utility.closeSQLStatement(st);
+        }
+        return exists;
+    }
+
+    /**
+     * Returns a substring of a given string with a size limit
+     * @param s String to operate on
+     * @param maxLength The max length of the sub string
+     * @return a substring of a given string with a size limit
+     */
+    public static String limitString(String s, int maxLength) {
+        return s.substring(0, Math.min(s.length(), maxLength));
+    }
+
 }

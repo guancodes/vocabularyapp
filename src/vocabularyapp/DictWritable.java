@@ -3,7 +3,7 @@ package vocabularyapp;
 import java.io.Closeable;
 
 /**
- * this interface extends Closeable class
+ * This interface extends Closeable class
  * having following methods was introduced to mock unit test
  * @author guanwang
  */

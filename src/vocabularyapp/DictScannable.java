@@ -5,11 +5,13 @@ package vocabularyapp;
  * @author guanwang
  */
 public interface DictScannable {
+
     /**
      * Checks if this DictScannable has next element
      * @return if has next element
      */
     public boolean hasNext();
+
     /**
      * Gets the next line of the DictScannable
      * @return the next line

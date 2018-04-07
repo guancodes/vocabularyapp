@@ -9,13 +9,13 @@ import java.util.Scanner;
  * @author guanwang
  */
 public class DictScanner implements DictScannable {
-    
+
     private Scanner scanner;
-    
+
     /**
      * Creates a new DictScanner from a given source file
      * @param file file to be fed into scanner
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public DictScanner(File file) throws FileNotFoundException {
         this.scanner = new Scanner(file);
@@ -38,5 +38,5 @@ public class DictScanner implements DictScannable {
     public String nextLine() {
         return this.scanner.nextLine();
     }
-    
+
 }
